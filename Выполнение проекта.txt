@@ -1,0 +1,74 @@
+1. Подготовка проекта
+    Клонировал репозиторий:
+    git clone https://github.com/ваш-аккаунт/django_sprint3.git Dev/django_sprint3
+    Скопировал файлы из предыдущего спринта папку blogicum:
+    Создал и активировал виртуальное окружение:
+    python -m venv venv
+    source venv/bin/activat
+    Установил зависимости:
+    pip install -r requirements.txt
+2. Настройка моделей (blog/models.py)
+    Пример:
+    class Category(models.Model):
+    title = models.CharField(
+        'Заголовок',
+        max_length=256
+    )
+    description = models.TextField(
+        'Описание'
+    )
+    slug = models.SlugField(
+        'Идентификатор',
+        unique=True,
+        help_text='Идентификатор страницы для URL; разрешены символы латиницы, '
+                 'цифры, дефис и подчёркивание.'
+    )
+    is_published = models.BooleanField(
+        'Опубликовано',
+        default=True,
+        help_text='Снимите галочку, чтобы скрыть публикацию.'
+    )
+    created_at = models.DateTimeField(
+        'Добавлено',
+        auto_now_add=True
+    )
+
+    class Meta:
+        verbose_name = 'категория'
+        verbose_name_plural = 'Категории'
+
+    def __str__(self):
+        return self.title
+3. Настройка админки (blog/admin.py)
+    from django.contrib import admin
+    from .models import Category, Location, Post
+    # Register your models here.
+    admin.site.register(Category)
+    admin.site.register(Location)
+    admin.site.register(Post)
+4. Создал супервозователя (админ_проекта)
+    Чтобы можно было проверить admin
+    python manahe.py createsuperuser
+    Нужен для проверки перевода на русский язык
+5. Обновил views.py
+    Пример
+    def index(request):
+        latest_posts = post_filter().order_by('-pub_date')[:5]
+        return render(
+            request,
+            'blog/index.html',
+            {'post_list': latest_posts}
+        )
+6. Перенос шаблонов
+    Удалил старые шаблоны templates
+    Вставил новые templates
+7. Настройка базы данных
+    Создал миграции
+    python manage.py makemigrations
+    Примените миграции:
+    python manage.py migrate
+    Загрузите фикстуры
+    python manage.py loaddata db.json
+8. Тестирование
+    Протестировал
+    pytest
